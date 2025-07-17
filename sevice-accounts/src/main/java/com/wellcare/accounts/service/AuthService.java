@@ -29,8 +29,8 @@ public class AuthService {
                 .password(passwordEncoder.encode(request.getPassword()))
                 .email(request.getEmail())
                 .department(request.getDepartment())
-                .isAdmin(request.isAdmin())
-                .isEmployee(request.isEmployee())
+                .isAdmin(request.getIsAdmin())
+                .isEmployee(request.getIsEmployee())
                 .build();
         userRepository.save(user);
 

@@ -21,8 +21,12 @@ public class User {
     @Column(unique = true, nullable = false)
     private String email;
     private String department;
+    @Column(name = "is_admin")
     private boolean isAdmin;
+
+    @Column(name = "is_employee")
     private boolean isEmployee;
+
 
 
 }

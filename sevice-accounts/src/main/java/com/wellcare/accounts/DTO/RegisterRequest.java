@@ -14,7 +14,7 @@ public class RegisterRequest {
     private String password;
     private String email;
     private String department;
-    private boolean isAdmin;
-    private boolean isEmployee;
+    private Boolean isAdmin;
+    private Boolean isEmployee;
 
 }
