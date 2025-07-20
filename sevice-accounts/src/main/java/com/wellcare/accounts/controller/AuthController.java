@@ -4,10 +4,8 @@ import com.wellcare.accounts.DTO.*;
 import com.wellcare.accounts.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/auth")
@@ -17,13 +15,15 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request) {
-        String token= authService.register(request);
-        return ResponseEntity.ok(new AuthResponse(token));
-    }
+        public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request) {
+            String token= authService.register(request);
+            return ResponseEntity.ok(new AuthResponse(token));
+        }
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request){
-        String token= authService.authenticate(request);
-        return ResponseEntity.ok(new AuthResponse(token));
-    }
+        public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request){
+            String token= authService.authenticate(request);
+            return ResponseEntity.ok(new AuthResponse(token));
+        }
+
 }
+

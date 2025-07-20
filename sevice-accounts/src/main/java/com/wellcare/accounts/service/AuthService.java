@@ -10,6 +10,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -24,6 +27,10 @@ public class AuthService {
         if(userRepository.existsByEmail(request.getEmail())){
             throw new RuntimeException("Email already Exists !!");
         }
+        Set<String> roles = new HashSet<>();
+        if (request.getIsAdmin() ) roles.add("ROLE_ADMIN");
+        if (request.getIsEmployee()) roles.add("ROLE_EMPLOYEE");
+
         User user= User.builder()
                 .username(request.getUsername())
                 .password(passwordEncoder.encode(request.getPassword()))
@@ -31,10 +38,12 @@ public class AuthService {
                 .department(request.getDepartment())
                 .isAdmin(request.getIsAdmin())
                 .isEmployee(request.getIsEmployee())
+                .roles(roles)
                 .build();
         userRepository.save(user);
 
-        return jwtUtil.generateToken(user.getUsername());
+        return jwtUtil.generateToken(user.getUsername(), user.getRoles());
+
     }
     public String authenticate(AuthRequest request){
         User user= userRepository.findByUsername(request.getUsername())
@@ -44,6 +53,7 @@ public class AuthService {
             throw new RuntimeException("Invalid credentials ! ");
 
         }
-        return jwtUtil.generateToken(user.getUsername());
+        return jwtUtil.generateToken(user.getUsername(), user.getRoles());
+
     }
 }
