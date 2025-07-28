@@ -24,15 +24,14 @@ public class AuthService {
         if(userRepository.existsByUsername(request.getUsername())){
             throw new RuntimeException("Username Already Exists! ");
         }
-        if(userRepository.existsByEmail(request.getEmail())){
-            throw new RuntimeException("Email already Exists !!");
-        }
+
         Set<String> roles = new HashSet<>();
         if (request.getIsAdmin() ) roles.add("ROLE_ADMIN");
         if (request.getIsEmployee()) roles.add("ROLE_EMPLOYEE");
 
         User user= User.builder()
                 .username(request.getUsername())
+                .lastname((request.getLastname()))
                 .password(passwordEncoder.encode(request.getPassword()))
                 .email(request.getEmail())
                 .department(request.getDepartment())
@@ -42,18 +41,17 @@ public class AuthService {
                 .build();
         userRepository.save(user);
 
-        return jwtUtil.generateToken(user.getUsername(), user.getRoles());
+        return jwtUtil.generateToken(user.getEmail(), user.getRoles());
 
     }
-    public String authenticate(AuthRequest request){
-        User user= userRepository.findByUsername(request.getUsername())
-                .orElseThrow(()-> new RuntimeException("User Not Found !! "));
+    public String authenticate(AuthRequest request) {
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("User Not Found !!"));
 
-        if(!passwordEncoder.matches(request.getPassword(), user.getPassword())){
-            throw new RuntimeException("Invalid credentials ! ");
-
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            throw new RuntimeException("Invalid credentials !");
         }
-        return jwtUtil.generateToken(user.getUsername(), user.getRoles());
 
+        return jwtUtil.generateToken(user.getEmail(), user.getRoles()); // Keep using username for token
     }
 }

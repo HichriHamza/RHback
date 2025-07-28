@@ -19,6 +19,7 @@ public class User {
     private Long id;
     @Column(unique = true, nullable = false)
     private String username;
+    private String lastname;
     @Column(nullable = false)
     private String password;
     @Column(unique = true, nullable = false)
@@ -35,5 +36,7 @@ public class User {
     @Column(name = "role")
     private Set<String> roles = new HashSet<>();
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private UserDetails userDetails;
 
 }
